@@ -1,2 +1,5 @@
 .env
 /env
+client_secret_518940787320-8s7nd7oh821pads8qumh5ni4828iip5l.apps.googleusercontent.com.json
+*.pyc
+.log

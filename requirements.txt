@@ -1,9 +1,0 @@
-streamlit
-pyzbar
-pillow
-gspread
-oauth2client
-google-auth-oauthlib
-pandas
-python-dotenv
-uuid
