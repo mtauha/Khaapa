@@ -1,5 +1,6 @@
 import streamlit as st
 import uuid
+import json
 import os
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
@@ -18,7 +19,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/spreadsheets",
 ]
-REDIRECT_URI = "https://khaapa-pos.streamlit.app/"  # Streamlit runs on this by default
+REDIRECT_URI = "http://localhost:8501"  # Streamlit runs on this by default
 
 # Fake session store (for dev)
 session_store = {}
@@ -56,8 +57,8 @@ def handle_oauth_callback():
     # Parse full URL including ?code=...
     query_params = st.query_params
     if "state" in query_params and "code" in query_params:
-        state = query_params["state"][0]
-        code = query_params["code"][0]
+        state = query_params["state"]
+        code = query_params["code"]
 
         flow = Flow.from_client_config(
             {
@@ -70,6 +71,7 @@ def handle_oauth_callback():
             },
             scopes=SCOPES,
             redirect_uri=REDIRECT_URI,
+            state=state
         )
         flow.fetch_token(code=code)
 
