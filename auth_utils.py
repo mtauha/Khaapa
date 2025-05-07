@@ -43,7 +43,7 @@ def google_login():
             access_type="offline", include_granted_scopes="true"
         )
         st.session_state["auth_state"] = state
-        st.markdown(f"[Login with Google]({auth_url})")
+        st.link_button("Log in with Google", url=auth_url)
         st.stop()
     else:
         creds = Credentials(**st.session_state["credentials"])

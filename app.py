@@ -35,10 +35,7 @@ if "email" not in st.session_state:
 if "email" not in st.session_state:
     st.title("Khaapa Login")
 
-    # Streamlit built-in button for Google Login
-    if st.button("Log in with Google"):
-        # Trigger the Google login process
-        google_login()
+    google_login()
     st.stop()
 
 # Retrieve creds from session state
