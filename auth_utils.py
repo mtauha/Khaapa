@@ -1,13 +1,17 @@
 import streamlit as st
 import uuid
-import json
 import os
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+from dotenv import load_dotenv
 
-# Configure paths
-CLIENT_SECRET_FILE = "client_secret.json"
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure paths and secrets
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 SCOPES = [
     "openid",
     "https://www.googleapis.com/auth/userinfo.email",
@@ -22,8 +26,17 @@ session_store = {}
 
 def google_login():
     if "credentials" not in st.session_state:
-        flow = Flow.from_client_secrets_file(
-            CLIENT_SECRET_FILE, scopes=SCOPES, redirect_uri=REDIRECT_URI
+        flow = Flow.from_client_config(
+            {
+                "web": {
+                    "client_id": CLIENT_ID,
+                    "client_secret": CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                }
+            },
+            scopes=SCOPES,
+            redirect_uri=REDIRECT_URI,
         )
 
         auth_url, state = flow.authorization_url(
@@ -46,8 +59,17 @@ def handle_oauth_callback():
         state = query_params["state"][0]
         code = query_params["code"][0]
 
-        flow = Flow.from_client_secrets_file(
-            CLIENT_SECRET_FILE, scopes=SCOPES, redirect_uri=REDIRECT_URI, state=state
+        flow = Flow.from_client_config(
+            {
+                "web": {
+                    "client_id": CLIENT_ID,
+                    "client_secret": CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                }
+            },
+            scopes=SCOPES,
+            redirect_uri=REDIRECT_URI,
         )
         flow.fetch_token(code=code)
 
