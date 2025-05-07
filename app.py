@@ -7,7 +7,18 @@ from auth_utils import (
     get_user_email,
     create_session,
 )
-from sheets_utils import get_inventory_items, write_sales_entries, record_session
+from sheets_utils import (
+    get_inventory_items,
+    write_sales_entries,
+    record_session,
+    price_list,
+)
+
+# Initialize session state for order_items and order_total
+if "order_items" not in st.session_state:
+    st.session_state["order_items"] = []  # Initialize as an empty list
+if "order_total" not in st.session_state:
+    st.session_state["order_total"] = 0  # Initialize as 0
 
 # --- Handle OAuth ---
 if "email" not in st.session_state:
@@ -42,26 +53,54 @@ st.title("📦 Khaapa System")
 # --- Load Inventory ---
 if creds:  # Ensure creds is available
     inventory = get_inventory_items(creds)  # Pass creds to get_inventory_items
+    if not inventory:
+        st.error("No items found in the Inventory sheet. Please check the data.")
+        st.stop()
 else:
     st.error("Authentication credentials are missing. Please log in again.")
     st.stop()
 
-if "order_items" not in st.session_state:
-    st.session_state["order_items"] = []
-
 # --- Add Items to Order ---
 st.subheader("🛒 Add Item to Order")
-item = st.selectbox("Select Item", inventory)
+
+# Select Item Manually
+st.write("### Select Item")
+item_name = st.selectbox("Select Item", list(inventory))
 qty = st.number_input("Quantity", min_value=1, value=1, step=1)
+
 if st.button("Add to Order"):
-    st.session_state["order_items"].append({"item_name": item, "quantity": qty})
-    st.success(f"Added {qty} x {item}")
+    # Add the selected item to the order
+    st.session_state["order_items"].append({"item_name": item_name, "quantity": qty})
+    st.success(f"Added {qty} x {item_name}")
 
 # --- Show Current Order ---
 st.subheader("📝 Current Order")
 if st.session_state["order_items"]:
-    for i, entry in enumerate(st.session_state["order_items"]):
-        st.write(f"{i + 1}. {entry['item_name']} × {entry['quantity']}")
+    # Create a table for the current order
+    import pandas as pd
+
+    # Add a price lookup logic (replace with actual logic if available)
+    price_dict = price_list(creds)
+
+    # Prepare data for the table
+    order_data = []
+    for entry in st.session_state["order_items"]:
+        item_name = entry["item_name"]
+        quantity = entry["quantity"]
+        price = price_dict[item_name] * quantity
+        order_data.append(
+            {"Item Name": item_name, "Quantity": quantity, "Price": price}
+        )
+
+    # Convert to a DataFrame
+    order_df = pd.DataFrame(order_data)
+
+    # Display the table
+    st.table(order_df)
+
+    # Display the total price
+    total_price = order_df["Price"].sum()
+    st.write(f"**Total Price: {total_price}**")
 else:
     st.info("No items added yet.")
 
@@ -73,7 +112,6 @@ pos = st.selectbox(
 if st.button("Submit Order"):
     if st.session_state["order_items"]:
         order_id = "ORD" + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        print(st.session_state["order_items"])
         write_sales_entries(
             items=st.session_state["order_items"],
             duty_person=st.session_state["email"],
@@ -82,5 +120,6 @@ if st.button("Submit Order"):
         )
         st.success(f"Order {order_id} submitted successfully!")
         st.session_state["order_items"] = []  # Reset order
+        st.session_state["order_total"] = 0  # Reset order total
     else:
         st.warning("No items to checkout.")
