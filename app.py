@@ -45,7 +45,7 @@ creds = st.session_state.get("creds")  # Get creds from session state
 st.sidebar.write(f"Logged in as: {st.session_state['email']}")
 if st.sidebar.button("Logout"):
     st.session_state.clear()
-    st.st.query_params
+    st.query_params
     st.experimental_rerun()
 
 # --- Main POS App ---
