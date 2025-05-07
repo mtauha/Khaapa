@@ -54,7 +54,7 @@ def google_login():
 
 def handle_oauth_callback():
     # Parse full URL including ?code=...
-    query_params = st.experimental_get_query_params()
+    query_params = st.query_params
     if "state" in query_params and "code" in query_params:
         state = query_params["state"][0]
         code = query_params["code"][0]

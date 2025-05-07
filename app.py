@@ -33,8 +33,12 @@ if "email" not in st.session_state:
 
 # --- Login Screen ---
 if "email" not in st.session_state:
-    st.title("POS System Login")
-    google_login()
+    st.title("Khaapa Login")
+
+    # Streamlit built-in button for Google Login
+    if st.button("Log in with Google"):
+        # Trigger the Google login process
+        google_login()
     st.stop()
 
 # Retrieve creds from session state
@@ -44,7 +48,7 @@ creds = st.session_state.get("creds")  # Get creds from session state
 st.sidebar.write(f"Logged in as: {st.session_state['email']}")
 if st.sidebar.button("Logout"):
     st.session_state.clear()
-    st.experimental_get_query_params()
+    st.st.query_params
     st.experimental_rerun()
 
 # --- Main POS App ---
