@@ -1,5 +1,6 @@
 import streamlit as st
 import datetime
+import pandas as pd
 from auth_utils import (
     google_login,
     handle_oauth_callback,
@@ -77,7 +78,6 @@ if st.button("Add to Order"):
 st.subheader("📝 Current Order")
 if st.session_state["order_items"]:
     # Create a table for the current order
-    import pandas as pd
 
     # Add a price lookup logic (replace with actual logic if available)
     price_dict = price_list(creds)
@@ -112,14 +112,17 @@ pos = st.selectbox(
 if st.button("Submit Order"):
     if st.session_state["order_items"]:
         order_id = "ORD" + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        write_sales_entries(
-            items=st.session_state["order_items"],
-            duty_person=st.session_state["email"],
-            pos=pos,  # Pass the selected POS value
-            creds=creds,  # Pass creds to write_sales_entries
-        )
+        print(st.session_state["order_items"])
+        if len(st.session_state["order_items"]) > 0:
+            write_sales_entries(
+                items=st.session_state["order_items"],
+                duty_person=st.session_state["email"],
+                pos=pos,  # Pass the selected POS value
+                creds=creds,  # Pass creds to write_sales_entries
+            )
         st.success(f"Order {order_id} submitted successfully!")
         st.session_state["order_items"] = []  # Reset order
         st.session_state["order_total"] = 0  # Reset order total
+        st.rerun()
     else:
         st.warning("No items to checkout.")
