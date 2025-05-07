@@ -112,7 +112,6 @@ pos = st.selectbox(
 if st.button("Submit Order"):
     if st.session_state["order_items"]:
         order_id = "ORD" + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        print(st.session_state["order_items"])
         if len(st.session_state["order_items"]) > 0:
             write_sales_entries(
                 items=st.session_state["order_items"],
