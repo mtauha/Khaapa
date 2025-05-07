@@ -19,7 +19,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/spreadsheets",
 ]
-REDIRECT_URI = "http://localhost:8501"  # Streamlit runs on this by default
+REDIRECT_URI = "https://khaapa-pos.streamlit.app/"  # Streamlit runs on this by default
 
 # Fake session store (for dev)
 session_store = {}
