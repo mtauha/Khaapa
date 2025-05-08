@@ -27,7 +27,7 @@ def get_inventory_items(creds):
     service = get_sheets_service(creds)
     sheet = service.spreadsheets()
     result = (
-        sheet.values().get(spreadsheetId=SHEET_ID, range="Inventory!A2:A").execute()
+        sheet.values().get(spreadsheetId=SHEET_ID, range="'Price List'!A2:A").execute()
     )
     values = result.get("values", [])
     return [row[0] for row in values if row]
