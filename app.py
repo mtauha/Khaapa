@@ -109,19 +109,25 @@ st.subheader("✅ Checkout Order")
 pos = st.selectbox(
     "Select POS", ["Cash", "Jaweria Easypaisa", "Ibrahim Jazzcash"]
 )  # POS dropdown
+comments = st.text_input("Comments")  # Input for Comments
+customer_type = st.selectbox(
+    "Customer Type", ["Student", "Staff"]
+)  # Dropdown for Customer Type
+
 if st.button("Submit Order"):
     if st.session_state["order_items"]:
         order_id = "ORD" + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if len(st.session_state["order_items"]) > 0:
-            write_sales_entries(
-                items=st.session_state["order_items"],
-                duty_person=st.session_state["email"],
-                pos=pos,  # Pass the selected POS value
-                creds=creds,  # Pass creds to write_sales_entries
-            )
+        write_sales_entries(
+            items=st.session_state["order_items"],
+            duty_person=st.session_state["email"],
+            pos=pos,  # Pass the selected POS value
+            creds=creds,  # Pass creds to write_sales_entries
+            comments=comments,  # Pass Comments
+            customer_type=customer_type,  # Pass Customer Type
+        )
         st.success(f"Order {order_id} submitted successfully!")
         st.session_state["order_items"] = []  # Reset order
         st.session_state["order_total"] = 0  # Reset order total
-        st.rerun()
+        st.experimental_rerun()
     else:
         st.warning("No items to checkout.")

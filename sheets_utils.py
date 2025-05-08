@@ -53,7 +53,9 @@ def price_list(creds):
         return
 
 
-def write_sales_entries(items: list, duty_person, pos, creds):
+def write_sales_entries(
+    items: list, duty_person, pos, creds, comments, customer_type
+):
     """
     Write sales entries to the Google Sheet, including all columns.
     Fetch the price dynamically from the Price List sheet.
@@ -97,6 +99,12 @@ def write_sales_entries(items: list, duty_person, pos, creds):
             ),  # Order Total (Column G, only for the first row)
             pos,  # POS (Column H)
             duty_person,  # Duty Person (Column I)
+            comments,  # Comments (Column J)
+            "",  # Transaction Id (Column K)
+            customer_type,  # Customer Type (Column L)
+            (
+                order_total if index == 0 else ""
+            ),  # Total (Column M, only for the first row)
         ]
         data.append(row)
 
