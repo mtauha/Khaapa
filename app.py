@@ -46,7 +46,7 @@ st.sidebar.write(f"Logged in as: {st.session_state['email']}")
 if st.sidebar.button("Logout"):
     st.session_state.clear()
     st.query_params.clear()
-    st.experimental_rerun()
+    st.rerun()
 
 # --- Main POS App ---
 st.title("📦 Khaapa System")
@@ -128,6 +128,6 @@ if st.button("Submit Order"):
         st.success(f"Order {order_id} submitted successfully!")
         st.session_state["order_items"] = []  # Reset order
         st.session_state["order_total"] = 0  # Reset order total
-        st.experimental_rerun()
+        st.rerun()
     else:
         st.warning("No items to checkout.")
