@@ -101,10 +101,7 @@ def write_sales_entries(
             duty_person,  # Duty Person (Column I)
             comments,  # Comments (Column J)
             "",  # Transaction Id (Column K)
-            customer_type,  # Customer Type (Column L)
-            (
-                order_total if index == 0 else ""
-            ),  # Total (Column M, only for the first row)
+            customer_type, # Total (Column M, only for the first row)
         ]
         data.append(row)
 
